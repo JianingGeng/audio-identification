@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Upload Audio Files</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  </head>
+
+  <body>
+    <h2>Upload Multiple Audio Files</h2>
+    <form id="multiple-upload-form" method="post" enctype="multipart/form-data">
+      {% csrf_token %} {{ multiple_form.as_p }}
+      <button type="submit">Upload</button>
+    </form>
+    <span id="multiple-upload-status"></span>
+
+    <h2>Upload Single Audio File</h2>
+    <form id="single-upload-form" method="post" enctype="multipart/form-data">
+      {% csrf_token %} {{ single_form.as_p }}
+      <button type="submit">Upload</button>
+    </form>
+    <span id="single-upload-status"></span>
+
+    <script>
+      $(document).ready(function () {
+        $('#multiple-upload-form').on('submit', function (e) {
+          e.preventDefault();
+          $('#multiple-upload-status').text(''); // 清空状态消息
+          $.ajax({
+            url: '{% url "upload_audio" %}', // 使用 Django 的 URL 模板标签
+            type: 'post',
+            data: new FormData(this),
+            processData: false,
+            contentType: false,
+            success: function (response) {
+              $('#multiple-upload-status').text('上传成功!');
+            },
+            error: function (xhr, errmsg, err) {
+              $('#multiple-upload-status').text('上传失败!');
+            },
+          });
+        });
+        $('#single-upload-form').on('submit', function (e) {
+          e.preventDefault();
+          $('#single-upload-status').text(''); // 清空状态消息
+          $.ajax({
+            url: '{% url "upload_single" %}', // 使用 Django 的 URL 模板标签
+            type: 'post',
+            data: new FormData(this),
+            processData: false,
+            contentType: false,
+            success: function (response) {
+              $('#single-upload-status').text('上传成功!');
+            },
+            error: function (xhr, errmsg, err) {
+              $('#single-upload-status').text('上传失败!');
+            },
+          });
+        });
+      });
+    </script>
+  </body>
+</html>
