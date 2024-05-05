@@ -1,0 +1,31 @@
+# Developer Guide
+
+
+## Project Structure
+
+- `myapp/`: Django app containing views, models, and templates.
+  - `views.py`: Contains the views for handling web requests. Manages the interaction between the front end and the back end.
+  - `models.py`: Defines the data models. This is where the structure of the database is defined.
+  - `forms.py`: Contains Django forms for handling user input, specifically for uploading audio files.
+    - **Usage**: Used to generate HTML forms and handle file uploads securely.
+  - `task.py`: Contains asynchronous tasks powered by Celery, used for handling longer-running processes such as audio processing that shouldn't block the main thread.
+  - `audio_processor.py`: Handles the core functionality of processing audio files, such as extracting features or identifying specific audio patterns.
+    - **Usage**: Called by views or tasks to perform complex audio analysis and processing.
+
+- `myproject/`: Contains the Django project settings.
+  - `settings.py`: Manages settings and configurations like database connection info, Django apps configuration, middleware, etc.
+  - `urls.py`: Defines the URLs of the project that are linked to views for routing web requests.
+
+### Detailed Description of Key Components
+
+#### `forms.py`
+This module primarily through file uploads. These forms are used within the views to handle incoming data securely and efficiently.
+
+#### `task.py`
+This module utilizes Celery to define tasks that could run asynchronously， the default is not run asynchronously if you need to processing large amount of audio files could switch to asynchronously.
+
+#### `audio_processor.py`
+The `audio_processor.py` file is crucial for the functionality of the application as it contains all the logic needed to handle and process audio data. 
+
+
+
