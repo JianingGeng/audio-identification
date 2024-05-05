@@ -123,7 +123,7 @@ tabulate==0.9.0
 tensorboardX==2.6.2.2
 threadpoolctl==3.2.0
 tokenizers==0.15.2
-torch==2.2.1+cu121
+torch==2.2.1
 torch-audiomentations==0.11.1
 torch-pitch-shift==1.2.4
 torchaudio==2.2.2
