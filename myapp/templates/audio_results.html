@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Audio Comparison Results</title>
+  </head>
+  <body>
+    <h1>Audio Comparison Results</h1>
+    <ul>
+      {% for result in results %}
+      <li>{{ result.source_audio }} similar to {{ result.compared_audio }}</li>
+      {% endfor %}
+    </ul>
+  </body>
+</html>

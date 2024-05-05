@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Upload Audio Files</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  </head>
+
+  <body>
+    <h2>Upload Multiple Audio Files</h2>
+    <form id="multiple-upload-form" method="post" enctype="multipart/form-data">
+      {% csrf_token %} {{ multiple_form.as_p }}
+      <button type="submit">Upload</button>
+    </form>
+    <span id="multiple-upload-status"></span>
+
+    <h2>Upload Single Audio File</h2>
+    <form id="single-upload-form" method="post" enctype="multipart/form-data">
+      {% csrf_token %} {{ single_form.as_p }}
+      <button type="submit">Upload</button>
+    </form>
+    <span id="single-upload-status"></span>
+
+    <h2>Find audios with the same voice</h2>
+    <button id="run-task-btn">Run Task</button>
+    <div id="task-status"></div>
+
+    <h2>Clear Uploads and Result</h2>
+    <button id="deleteButton">Clear All Data</button>
+    <div id="responseMessage"></div>
+
+    <script>
+      $(document).ready(function () {
+        $('#multiple-upload-form').on('submit', function (e) {
+          e.preventDefault();
+          $('#multiple-upload-status').text('');
+          $.ajax({
+            url: '{% url "upload_audio" %}', // Using Django's URL template tag
+            type: 'post',
+            data: new FormData(this),
+            processData: false,
+            contentType: false,
+            success: function (response) {
+              $('#multiple-upload-status').text('Upload successful!');
+            },
+            error: function (xhr, errmsg, err) {
+              $('#multiple-upload-status').text('Upload successful!');
+            },
+          });
+        });
+        $('#single-upload-form').on('submit', function (e) {
+          e.preventDefault();
+          $('#single-upload-status').text('');
+          $.ajax({
+            url: '{% url "upload_single" %}', // Using Django's URL template tag
+            type: 'post',
+            data: new FormData(this),
+            processData: false,
+            contentType: false,
+            success: function (response) {
+              $('#single-upload-status').text('Upload successful!');
+            },
+            error: function (xhr, errmsg, err) {
+              $('#single-upload-status').text('Upload successful!');
+            },
+          });
+        });
+        $('#deleteButton').click(function () {
+          if (
+            confirm(
+              'Are you sure you want to delete all data? This cannot be undone.'
+            )
+          ) {
+            $.ajax({
+              url: '{% url "clear-all" %}',
+              type: 'POST',
+              data: {
+                csrfmiddlewaretoken: '{{ csrf_token }}',
+              },
+              success: function (response) {
+                $('#responseMessage').text(response.message);
+              },
+              error: function () {
+                $('#responseMessage').text('Error deleting data.');
+              },
+            });
+          }
+        });
+        // Handling the click event of the Celery task execution button
+        $('#run-task-btn').click(function () {
+          $.ajax({
+            url: '{% url "run_task" %}',
+            type: 'POST',
+            data: {
+              csrfmiddlewaretoken: '{{ csrf_token }}',
+            },
+            success: function (response) {
+              $('#task-status').html(
+                response.message +
+                  ' <a href="' +
+                  response.results_url +
+                  '"><button>View Results</button></a>'
+              );
+            },
+            error: function () {
+              $('#task-status').text('Error running task.');
+            },
+          });
+        });
+      });
+    </script>
+  </body>
+</html>
